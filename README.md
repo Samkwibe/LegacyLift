@@ -32,7 +32,11 @@ Not only does it fix code—it **teaches** you how to write better code. Through
 ## ✨ Key Features
 
 - **🔍 Intelligent Static Analysis**: Automatically detects "Code Smells" (e.g., deep nesting, magic numbers, missing docstrings) using AST (Abstract Syntax Tree) parsing before AI processing.
-- **🛠️ Multi-LLM Refactoring Engine**: Seamlessly switch between **Gemini 3.5 Flash (Free)**, **Claude (Anthropic)**, or **GPT-4o (OpenAI)** to rewrite legacy code according to clean-code principles. 
+- **🛠️ Multi-LLM Refactoring Engine**: Seamlessly switch between **Gemini 3.5 Flash**, **Claude**, **GPT-4o**, or **Llama 3.1 70B (via NVIDIA)** to rewrite legacy code according to clean-code principles. 
+- **📥 GitHub & ZIP Support**: Clone entire public GitHub repositories or upload full `.zip` archives for repository-scale structural analysis.
+- **🌐 Polyglot Code Translation**: Instantly translate legacy codebases into modern languages like Python, JavaScript, Go, Rust, or C++.
+- **🛡️ Security Vulnerability Scanner**: Deep AI auditing to identify CVEs, injection flaws, exposed secrets, and logic bugs before they hit production.
+- **📄 PDF Report Export**: Generate beautiful, formatted PDF reports of your code reviews, documentation, and security audits to share with your team.
 - **📚 Automated Documentation**: Generates professional Google-style docstrings, high-level README module overviews, and OpenAPI schemas for REST endpoints.
 - **🧠 NVIDIA Deep-Dive Code Review**: Leverages NVIDIA's API to perform a deep-dive code review—pointing out exactly what was wrong with the original code, including bugs, bad practices, and performance issues, with a line-by-line breakdown.
 - **🗺️ Interactive Project Walkthrough**: Automatically scans entire project structures, explaining folder hierarchies, data flows, and architectures in both beginner and advanced terms.
