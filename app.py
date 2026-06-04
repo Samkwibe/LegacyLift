@@ -37,6 +37,11 @@ from core.explainer import generate_explanation
 from core.test_generator import generate_tests
 from core.project_analyzer import scan_local_codebase, generate_project_walkthrough
 from core.ui_theme import get_custom_css
+from core.github_integration import download_github_repo
+from core.zip_parser import parse_zip_file
+from core.security import run_security_audit
+from core.translator import translate_code
+from core.pdf_export import markdown_to_pdf
 
 def init_state():
     # Set up our variables for Streamlit's session state so they don't get lost on refresh
@@ -75,7 +80,7 @@ def render_sidebar():
     st.sidebar.markdown("---")
     
     st.sidebar.subheader("App Mode")
-    mode = st.sidebar.radio("Choose Mode", ["Single File Refactoring", "Full Project Walkthrough"])
+    mode = st.sidebar.radio("Choose Mode", ["Single File Refactoring", "Full Project Walkthrough", "Security Audit", "Code Translation"])
     st.session_state.mode = mode
     
     st.sidebar.markdown("---")
@@ -91,6 +96,11 @@ def render_sidebar():
     # Loop through a list of languages for the dropdown
     language = st.sidebar.selectbox("Choose Language", languages)
     st.session_state.language = language
+    
+    if mode == "Code Translation":
+        st.sidebar.subheader("Target Language")
+        target_language = st.sidebar.selectbox("Translate To", languages, index=0)
+        st.session_state.target_language = target_language
     
     st.sidebar.subheader("Load Example")
     example = st.sidebar.selectbox("Choose Example", [
@@ -132,26 +142,43 @@ def main():
         if st.session_state.walkthrough_report:
             st.markdown("---")
             st.download_button("Download Report (Markdown)", st.session_state.walkthrough_report, file_name="Project_Walkthrough.md")
+            try:
+                pdf_bytes = markdown_to_pdf(st.session_state.walkthrough_report)
+                st.download_button("Download Report (PDF)", pdf_bytes, file_name="Project_Walkthrough.pdf", mime="application/pdf")
+            except Exception as e:
+                st.error(f"Could not generate PDF: {e}")
             st.markdown(st.session_state.walkthrough_report)
             
     else:
-        st.title("Step 1 — Input your code")
-        st.markdown("Paste or upload a `.py` or `.js` file to begin.")
+        st.title(f"Step 1 — Input your code ({st.session_state.mode})")
+        st.markdown("Upload a file, paste your code, or import from GitHub to begin.")
         
-        uploaded_file = st.file_uploader("Drop your .py or .js file here", type=["py", "js"])
+        github_url = st.text_input("🔗 Import from a GitHub repository URL (e.g., https://github.com/Samkwibe/LegacyLift)")
+        uploaded_file = st.file_uploader("📂 Drop your file or .zip archive here", type=["py", "js", "zip"])
         
-        code_input = st.text_area("Or paste your legacy code", height=300)
+        code_input = st.text_area("✍️ Or paste your legacy code", height=300)
         current_code = ""
-        if uploaded_file:
-            current_code = uploaded_file.getvalue().decode("utf-8")
-        elif code_input:
-            current_code = code_input
+        
+        try:
+            if github_url:
+                with st.spinner("Downloading and extracting GitHub repository..."):
+                    zip_io = download_github_repo(github_url)
+                    current_code = parse_zip_file(zip_io)
+            elif uploaded_file:
+                if uploaded_file.name.endswith(".zip"):
+                    current_code = parse_zip_file(uploaded_file)
+                else:
+                    current_code = uploaded_file.getvalue().decode("utf-8")
+            elif code_input:
+                current_code = code_input
+        except Exception as e:
+            st.error(f"Error loading code: {str(e)}")
 
         col1, col2 = st.columns([1, 1])
         with col1:
             analyze_clicked = st.button("Analyze Code")
         with col2:
-            refactor_clicked = st.button("Refactor with Claude", type="primary")
+            refactor_clicked = st.button("Start AI Process", type="primary")
 
         if analyze_clicked:
             if current_code:
@@ -188,9 +215,18 @@ def main():
                 st.session_state.source_code = current_code
                 with st.spinner(f"Refactoring code using {st.session_state.get('provider', 'Claude (Anthropic)')}..."):
                     try:
-                        refactored, changelog = refactor_code(current_code, provider=st.session_state.get('provider', 'Claude (Anthropic)'))
-                        st.session_state.refactored_code = refactored
-                        st.session_state.changelog = changelog
+                        if st.session_state.mode == "Security Audit":
+                            res = run_security_audit(current_code, provider=st.session_state.get('provider', 'Claude (Anthropic)'))
+                            st.session_state.refactored_code = res
+                            st.session_state.changelog = ["Security audit completed."]
+                        elif st.session_state.mode == "Code Translation":
+                            res = translate_code(current_code, st.session_state.target_language, provider=st.session_state.get('provider', 'Claude (Anthropic)'))
+                            st.session_state.refactored_code = res
+                            st.session_state.changelog = [f"Translated code to {st.session_state.target_language}."]
+                        else:
+                            refactored, changelog = refactor_code(current_code, provider=st.session_state.get('provider', 'Claude (Anthropic)'))
+                            st.session_state.refactored_code = refactored
+                            st.session_state.changelog = changelog
                     except Exception as e:
                         st.error(f"Refactoring failed: {e}")
                         
