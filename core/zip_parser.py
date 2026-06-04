@@ -39,6 +39,14 @@ def parse_zip_file(zip_bytes_io):
         '.sql', '.sh', '.bash', '.md', '.json', '.txt'
     }
     
+    ext_map = {
+        '.py': 'Python', '.js': 'JavaScript', '.ts': 'TypeScript', '.java': 'Java',
+        '.cpp': 'C++', '.c': 'C++', '.h': 'C++', '.cs': 'C#', '.php': 'PHP',
+        '.rb': 'Ruby', '.go': 'Go', '.rs': 'Rust', '.swift': 'Swift', '.kt': 'Kotlin',
+        '.html': 'HTML', '.css': 'CSS', '.sql': 'SQL', '.sh': 'Bash', '.bash': 'Bash'
+    }
+    lang_counts = {}
+    
     ignore_dirs = {
         'venv', '.git', 'node_modules', '__pycache__', '.pytest_cache', 'build', 'dist'
     }
@@ -61,6 +69,10 @@ def parse_zip_file(zip_bytes_io):
                 ext = os.path.splitext(filename)[1].lower()
                 if ext not in valid_extensions:
                     continue
+                
+                if ext in ext_map:
+                    lang = ext_map[ext]
+                    lang_counts[lang] = lang_counts.get(lang, 0) + 1
                     
                 try:
                     with z.open(file_info) as f:
@@ -75,4 +87,8 @@ def parse_zip_file(zip_bytes_io):
     except zipfile.BadZipFile:
         raise ValueError("The uploaded file is not a valid ZIP archive.")
         
-    return combined_code
+    detected_lang = None
+    if lang_counts:
+        detected_lang = max(lang_counts, key=lang_counts.get)
+        
+    return combined_code, detected_lang

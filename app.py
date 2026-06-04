@@ -94,7 +94,9 @@ def render_sidebar():
         "PHP", "Ruby", "Go", "Rust", "Swift", "Kotlin", "HTML", "CSS", "SQL", "Bash"
     ]
     # Loop through a list of languages for the dropdown
-    language = st.sidebar.selectbox("Choose Language", languages)
+    default_lang = st.session_state.get("language", "Python")
+    default_idx = languages.index(default_lang) if default_lang in languages else 0
+    language = st.sidebar.selectbox("Choose Language", languages, index=default_idx)
     st.session_state.language = language
     
     if mode == "Code Translation":
@@ -163,10 +165,16 @@ def main():
             if github_url:
                 with st.spinner("Downloading and extracting GitHub repository..."):
                     zip_io = download_github_repo(github_url)
-                    current_code = parse_zip_file(zip_io)
+                    current_code, detected_lang = parse_zip_file(zip_io)
+                    if detected_lang and st.session_state.language != detected_lang:
+                        st.session_state.language = detected_lang
+                        st.rerun()
             elif uploaded_file:
                 if uploaded_file.name.endswith(".zip"):
-                    current_code = parse_zip_file(uploaded_file)
+                    current_code, detected_lang = parse_zip_file(uploaded_file)
+                    if detected_lang and st.session_state.language != detected_lang:
+                        st.session_state.language = detected_lang
+                        st.rerun()
                 else:
                     current_code = uploaded_file.getvalue().decode("utf-8")
             elif code_input:
@@ -212,6 +220,12 @@ def main():
 
         if refactor_clicked:
             if current_code:
+                st.session_state.refactored_code = None
+                st.session_state.changelog = None
+                st.session_state.explanation = None
+                st.session_state.docs = None
+                st.session_state.step3_unlocked = False
+                
                 st.session_state.source_code = current_code
                 with st.spinner(f"Refactoring code using {st.session_state.get('provider', 'Claude (Anthropic)')}..."):
                     try:
