@@ -1,0 +1,599 @@
+
+<h2 class="sr-only">LegacyLift UI/UX Design — full application mockup with sidebar, 4-step workflow, and all screens</h2>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans)}
+.app{display:flex;min-height:780px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);overflow:hidden;background:var(--color-background-primary)}
+
+.sidebar{width:220px;flex-shrink:0;background:var(--color-background-secondary);border-right:0.5px solid var(--color-border-tertiary);display:flex;flex-direction:column;padding:0}
+.sb-logo{padding:18px 16px 12px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.sb-logo-title{font-size:17px;font-weight:500;color:var(--color-text-primary);letter-spacing:-0.3px}
+.sb-logo-sub{font-size:11px;color:var(--color-text-tertiary);margin-top:2px}
+.sb-badge{display:inline-block;font-size:10px;background:#E6F1FB;color:#185FA5;padding:2px 7px;border-radius:20px;font-weight:500;margin-left:6px;vertical-align:middle}
+.sb-section{padding:12px 16px 6px;font-size:10px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:0.6px}
+.sb-item{display:flex;align-items:center;gap:9px;padding:7px 16px;font-size:13px;color:var(--color-text-secondary);cursor:pointer;border-left:2px solid transparent}
+.sb-item:hover{background:var(--color-background-primary);color:var(--color-text-primary)}
+.sb-item.active{background:var(--color-background-primary);color:var(--color-text-primary);border-left:2px solid #185FA5;font-weight:500}
+.sb-item i{font-size:15px;opacity:0.7}
+.sb-item.active i{opacity:1;color:#185FA5}
+.sb-divider{margin:8px 0;border:none;border-top:0.5px solid var(--color-border-tertiary)}
+.sb-label{padding:7px 16px 4px;font-size:11px;color:var(--color-text-tertiary)}
+.sb-select{margin:0 12px 8px;width:calc(100% - 24px);font-size:12px;padding:5px 8px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);color:var(--color-text-primary)}
+.sb-toggle{display:flex;gap:0;margin:0 12px 8px;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);overflow:hidden}
+.sb-toggle span{flex:1;text-align:center;padding:5px 0;font-size:11px;cursor:pointer;color:var(--color-text-secondary)}
+.sb-toggle span.on{background:#185FA5;color:#fff;font-weight:500}
+.sb-footer{margin-top:auto;padding:12px 16px;border-top:0.5px solid var(--color-border-tertiary)}
+.sb-footer-link{font-size:11px;color:var(--color-text-tertiary);display:flex;align-items:center;gap:5px;margin-bottom:4px}
+.sb-footer-link i{font-size:13px}
+
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:14px 20px;border-bottom:0.5px solid var(--color-border-tertiary);display:flex;align-items:center;justify-content:space-between;background:var(--color-background-primary)}
+.topbar-left{display:flex;align-items:center;gap:10px}
+.topbar-title{font-size:14px;font-weight:500;color:var(--color-text-primary)}
+.topbar-sub{font-size:12px;color:var(--color-text-tertiary)}
+.topbar-right{display:flex;align-items:center;gap:8px}
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:500}
+.pill-blue{background:#E6F1FB;color:#185FA5}
+.pill-green{background:#EAF3DE;color:#3B6D11}
+.pill-amber{background:#FAEEDA;color:#854F0B}
+.pill-gray{background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary)}
+
+.steps{display:flex;align-items:center;gap:0;padding:14px 20px;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
+.step{display:flex;align-items:center;gap:7px;padding:6px 12px;border-radius:var(--border-radius-md);font-size:12px;color:var(--color-text-tertiary);flex-shrink:0}
+.step.done{color:#3B6D11}
+.step.active{background:var(--color-background-primary);color:#185FA5;font-weight:500;border:0.5px solid var(--color-border-secondary)}
+.step.locked{opacity:0.45}
+.step-num{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;flex-shrink:0}
+.step.done .step-num{background:#EAF3DE;color:#3B6D11}
+.step.active .step-num{background:#185FA5;color:#fff}
+.step.locked .step-num{background:var(--color-background-secondary);color:var(--color-text-tertiary);border:0.5px solid var(--color-border-tertiary)}
+.step-arrow{color:var(--color-text-tertiary);font-size:12px;padding:0 4px;opacity:0.4}
+
+.content{flex:1;overflow-y:auto;padding:20px}
+
+.screen{display:none}
+.screen.show{display:block}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:16px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.card-title{font-size:12px;font-weight:500;color:var(--color-text-secondary);display:flex;align-items:center;gap:6px}
+.card-title i{font-size:14px}
+.code-area{background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px;font-family:var(--font-mono);font-size:11px;line-height:1.6;color:var(--color-text-secondary);min-height:180px;white-space:pre;overflow:hidden}
+.code-area .kw{color:#185FA5}
+.code-area .fn{color:#853494}
+.code-area .str{color:#3B6D11}
+.code-area .cm{color:var(--color-text-tertiary);font-style:italic}
+.code-area .add{background:#EAF3DE;color:#3B6D11;display:block}
+.code-area .del{background:#FCEBEB;color:#A32D2D;display:block;text-decoration:line-through;opacity:0.7}
+
+.smell-list{margin-top:12px}
+.smell-item{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:var(--border-radius-md);margin-bottom:4px;font-size:12px}
+.smell-item.warn{background:#FAEEDA;color:#633806}
+.smell-item.err{background:#FCEBEB;color:#501313}
+.smell-item.info{background:#E6F1FB;color:#042C53}
+.smell-item i{font-size:13px;flex-shrink:0}
+
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:var(--border-radius-md);font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-primary);font-family:var(--font-sans)}
+.btn:hover{background:var(--color-background-secondary)}
+.btn-primary{background:#185FA5;color:#fff;border-color:#185FA5}
+.btn-primary:hover{background:#0C447C;border-color:#0C447C}
+.btn-success{background:#3B6D11;color:#fff;border-color:#3B6D11}
+.btn-danger{background:transparent;color:#A32D2D;border-color:#F09595}
+.btn-danger:hover{background:#FCEBEB}
+.btn-sm{padding:5px 10px;font-size:11px}
+.btn-row{display:flex;gap:8px;align-items:center;margin-top:14px;flex-wrap:wrap}
+
+.metric-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.metric{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px}
+.metric-label{font-size:10px;color:var(--color-text-tertiary);margin-bottom:3px;text-transform:uppercase;letter-spacing:0.4px}
+.metric-val{font-size:18px;font-weight:500;color:var(--color-text-primary)}
+.metric-val.green{color:#3B6D11}
+.metric-val.amber{color:#854F0B}
+.metric-val.blue{color:#185FA5}
+
+.hitl-banner{background:#E6F1FB;border:0.5px solid #B5D4F4;border-radius:var(--border-radius-lg);padding:14px 16px;margin-bottom:16px;display:flex;align-items:flex-start;gap:12px}
+.hitl-banner i{font-size:18px;color:#185FA5;flex-shrink:0;margin-top:1px}
+.hitl-title{font-size:13px;font-weight:500;color:#042C53;margin-bottom:3px}
+.hitl-sub{font-size:12px;color:#185FA5}
+.hitl-actions{margin-left:auto;display:flex;gap:8px;align-items:center}
+
+.changelog{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px;margin-bottom:14px}
+.changelog-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.changelog-title i{font-size:13px}
+.changelog-item{display:flex;align-items:flex-start;gap:7px;font-size:12px;color:var(--color-text-secondary);margin-bottom:5px;line-height:1.5}
+.changelog-item i{font-size:13px;color:#3B6D11;flex-shrink:0;margin-top:1px}
+
+.tabs{display:flex;gap:0;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:16px}
+.tab{padding:8px 14px;font-size:12px;cursor:pointer;color:var(--color-text-tertiary);border-bottom:2px solid transparent;margin-bottom:-0.5px}
+.tab.active{color:#185FA5;border-bottom-color:#185FA5;font-weight:500}
+.tab.locked{opacity:0.35;cursor:not-allowed}
+
+.doc-block{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:12px 14px;margin-bottom:10px}
+.doc-block-title{font-size:11px;font-weight:500;color:var(--color-text-secondary);margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.doc-block-title i{font-size:13px;color:#185FA5}
+.doc-content{font-family:var(--font-mono);font-size:11px;color:var(--color-text-secondary);line-height:1.6}
+
+.test-block{margin-bottom:12px}
+.test-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.test-name{font-size:12px;font-weight:500;color:var(--color-text-primary)}
+.test-why{font-size:11px;color:var(--color-text-tertiary);font-style:italic}
+.test-code{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px;font-family:var(--font-mono);font-size:11px;color:var(--color-text-secondary);line-height:1.6}
+.test-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500}
+.test-happy{background:#EAF3DE;color:#3B6D11}
+.test-edge{background:#FAEEDA;color:#854F0B}
+.test-err{background:#FCEBEB;color:#A32D2D}
+
+.upload-zone{border:1.5px dashed var(--color-border-secondary);border-radius:var(--border-radius-lg);padding:28px;text-align:center;margin-bottom:14px;cursor:pointer}
+.upload-zone:hover{background:var(--color-background-secondary)}
+.upload-icon{font-size:28px;color:var(--color-text-tertiary);margin-bottom:8px}
+.upload-text{font-size:13px;color:var(--color-text-secondary)}
+.upload-sub{font-size:11px;color:var(--color-text-tertiary);margin-top:4px}
+
+.nav-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;border-radius:var(--border-radius-md);font-size:11px;cursor:pointer;border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary);background:transparent;font-family:var(--font-sans)}
+.nav-btn:hover{background:var(--color-background-secondary);color:var(--color-text-primary)}
+
+.section-label{font-size:11px;font-weight:500;color:var(--color-text-tertiary);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;margin-top:4px}
+.spinner{display:inline-block;width:14px;height:14px;border:2px solid #B5D4F4;border-top-color:#185FA5;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.progress-bar-wrap{background:var(--color-background-secondary);border-radius:20px;height:4px;margin-top:6px;overflow:hidden}
+.progress-bar{height:4px;border-radius:20px;background:#185FA5;width:65%}
+
+.diff-line{display:block;font-family:var(--font-mono);font-size:11px;line-height:1.7;padding:0 4px}
+.diff-add{background:#EAF3DE;color:#3B6D11}
+.diff-rem{background:#FCEBEB;color:#A32D2D}
+.diff-ctx{color:var(--color-text-tertiary)}
+.diff-hunk{color:#185FA5;font-style:italic}
+</style>
+
+<div style="padding:1rem 0">
+
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+  <div>
+    <div style="font-size:18px;font-weight:500;color:var(--color-text-primary)">LegacyLift — UI/UX Design</div>
+    <div style="font-size:12px;color:var(--color-text-tertiary);margin-top:2px">Full application mockup · 4 screens · Click the tabs below to navigate</div>
+  </div>
+  <div style="display:flex;gap:6px">
+    <span class="pill pill-blue"><i class="ti ti-brand-python" aria-hidden="true"></i> Python + Streamlit</span>
+    <span class="pill pill-gray">v1.0</span>
+  </div>
+</div>
+
+<div class="tabs" style="margin-bottom:16px">
+  <div class="tab active" onclick="showScreen('s1',this)"><i class="ti ti-upload" style="font-size:13px;margin-right:4px" aria-hidden="true"></i>Step 1 · Input</div>
+  <div class="tab" onclick="showScreen('s2',this)"><i class="ti ti-wand" style="font-size:13px;margin-right:4px" aria-hidden="true"></i>Step 2 · Review</div>
+  <div class="tab" onclick="showScreen('s3',this)"><i class="ti ti-file-text" style="font-size:13px;margin-right:4px" aria-hidden="true"></i>Step 3 · Docs</div>
+  <div class="tab" onclick="showScreen('s4',this)"><i class="ti ti-test-pipe" style="font-size:13px;margin-right:4px" aria-hidden="true"></i>Step 4 · Tests</div>
+</div>
+
+<div class="app">
+  <div class="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-title"><i class="ti ti-bolt" style="font-size:16px;color:#185FA5;vertical-align:-2px" aria-hidden="true"></i> LegacyLift <span class="sb-badge">v1.0</span></div>
+      <div class="sb-logo-sub">AI code refactoring tool</div>
+    </div>
+    <div class="sb-section">LLM Provider</div>
+    <select class="sb-select">
+      <option>Claude (Anthropic) ✓</option>
+      <option>GPT-4o (OpenAI)</option>
+    </select>
+    <div class="sb-section">Language</div>
+    <div class="sb-toggle">
+      <span class="on">Python</span>
+      <span>JavaScript</span>
+    </div>
+    <div class="sb-section">Load Example</div>
+    <select class="sb-select">
+      <option>— choose example —</option>
+      <option>Spaghetti function</option>
+      <option>God class</option>
+      <option>No docstrings</option>
+      <option>JS callback hell</option>
+    </select>
+    <hr class="sb-divider">
+    <div class="sb-section">Workflow</div>
+    <div class="sb-item active" onclick="showScreen('s1',null,0)"><i class="ti ti-upload" aria-hidden="true"></i> Input code</div>
+    <div class="sb-item" onclick="showScreen('s2',null,1)"><i class="ti ti-wand" aria-hidden="true"></i> Refactor & review</div>
+    <div class="sb-item locked"><i class="ti ti-file-text" aria-hidden="true"></i> Documentation</div>
+    <div class="sb-item locked"><i class="ti ti-test-pipe" aria-hidden="true"></i> Unit tests</div>
+    <hr class="sb-divider">
+    <div class="sb-section">Session</div>
+    <div class="sb-item"><i class="ti ti-history" aria-hidden="true"></i> Run history</div>
+    <div class="sb-footer">
+      <div class="sb-footer-link"><i class="ti ti-brand-github" aria-hidden="true"></i> github.com/Samkwibe</div>
+      <div class="sb-footer-link"><i class="ti ti-info-circle" aria-hidden="true"></i> About LegacyLift</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="topbar-title" id="screen-title">Step 1 — Input your code</span>
+        <span class="topbar-sub" id="screen-sub" style="margin-left:8px">Paste or upload a .py file to begin</span>
+      </div>
+      <div class="topbar-right">
+        <span class="pill pill-blue" id="provider-badge"><i class="ti ti-robot" style="font-size:11px" aria-hidden="true"></i> Claude (Anthropic)</span>
+        <span class="pill pill-green"><i class="ti ti-circle-check" style="font-size:11px" aria-hidden="true"></i> API connected</span>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step done" id="stp1"><div class="step-num"><i class="ti ti-check" style="font-size:10px" aria-hidden="true"></i></div>Input</div>
+      <div class="step-arrow">›</div>
+      <div class="step active" id="stp2"><div class="step-num">2</div>Analyze</div>
+      <div class="step-arrow">›</div>
+      <div class="step locked" id="stp3"><div class="step-num">3</div>Refactor</div>
+      <div class="step-arrow">›</div>
+      <div class="step locked" id="stp4"><div class="step-num">4</div>Docs & Tests</div>
+    </div>
+
+    <div class="content">
+
+      <!-- SCREEN 1: INPUT -->
+      <div class="screen show" id="s1">
+        <div class="upload-zone">
+          <div class="upload-icon"><i class="ti ti-file-upload" aria-hidden="true"></i></div>
+          <div class="upload-text">Drop your .py or .js file here</div>
+          <div class="upload-sub">or paste code directly below · max 500 lines</div>
+        </div>
+        <div class="section-label">Or paste your legacy code</div>
+        <div class="card" style="padding:0;overflow:hidden;margin-bottom:14px">
+          <div class="card-header" style="padding:10px 14px;border-bottom:0.5px solid var(--color-border-tertiary)">
+            <div class="card-title"><i class="ti ti-code" aria-hidden="true"></i> legacy_processor.py</div>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-sm"><i class="ti ti-clipboard" aria-hidden="true"></i> Paste</button>
+              <button class="btn btn-sm"><i class="ti ti-eraser" aria-hidden="true"></i> Clear</button>
+            </div>
+          </div>
+          <div class="code-area" style="border-radius:0;min-height:210px"><span class="cm"># legacy code — no type hints, no docstrings, unclear names</span>
+<span class="kw">def</span> <span class="fn">proc</span>(d, x, flag):
+    r = []
+    <span class="kw">for</span> i <span class="kw">in</span> d:
+        <span class="kw">if</span> flag == <span class="str">True</span>:
+            <span class="kw">if</span> x > <span class="str">0</span>:
+                <span class="kw">if</span> i[<span class="str">'val'</span>] > x:
+                    r.append(i[<span class="str">'val'</span>] * <span class="str">2.5</span>)
+                <span class="kw">else</span>:
+                    r.append(i[<span class="str">'val'</span>])
+    total = <span class="str">0</span>
+    <span class="kw">for</span> item <span class="kw">in</span> r:
+        total = total + item
+    <span class="kw">return</span> total, r</div>
+        </div>
+        <div class="section-label">Static analysis results</div>
+        <div class="smell-list">
+          <div class="smell-item err"><i class="ti ti-alert-triangle" aria-hidden="true"></i><strong>Missing docstring</strong> — function <code>proc</code> has no documentation</div>
+          <div class="smell-item warn"><i class="ti ti-variable" aria-hidden="true"></i><strong>Unclear names</strong> — variables <code>d</code>, <code>x</code>, <code>r</code>, <code>i</code> are not descriptive</div>
+          <div class="smell-item warn"><i class="ti ti-arrow-merge" aria-hidden="true"></i><strong>Deep nesting</strong> — 3 levels of nested conditionals detected</div>
+          <div class="smell-item warn"><i class="ti ti-number" aria-hidden="true"></i><strong>Magic number</strong> — <code>2.5</code> used directly, should be a named constant</div>
+          <div class="smell-item info"><i class="ti ti-info-circle" aria-hidden="true"></i><strong>No type hints</strong> — parameters and return type are unannotated</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="showScreen('s2',null,1)"><i class="ti ti-wand" aria-hidden="true"></i> Refactor with Claude ↗</button>
+          <button class="btn"><i class="ti ti-adjustments" aria-hidden="true"></i> Edit prompt</button>
+          <span style="font-size:11px;color:var(--color-text-tertiary);margin-left:auto">5 issues found · 14 lines</span>
+        </div>
+      </div>
+
+      <!-- SCREEN 2: REVIEW -->
+      <div class="screen" id="s2">
+        <div class="hitl-banner">
+          <i class="ti ti-eye-check" aria-hidden="true"></i>
+          <div>
+            <div class="hitl-title">Human-in-the-Loop review required</div>
+            <div class="hitl-sub">Claude has refactored your code. Review all changes before accepting. You are in control.</div>
+          </div>
+          <div class="hitl-actions">
+            <button class="btn btn-danger btn-sm" onclick="showScreen('s1',null,0)"><i class="ti ti-x" aria-hidden="true"></i> Reject</button>
+            <button class="btn btn-success btn-sm" onclick="showScreen('s3',null,2)"><i class="ti ti-check" aria-hidden="true"></i> Accept refactoring ↗</button>
+          </div>
+        </div>
+        <div class="metric-row">
+          <div class="metric"><div class="metric-label">Lines</div><div class="metric-val">14 → <span class="green">12</span></div></div>
+          <div class="metric"><div class="metric-label">Issues fixed</div><div class="metric-val green">5 / 5</div></div>
+          <div class="metric"><div class="metric-label">Functions</div><div class="metric-val blue">1 → 2</div></div>
+          <div class="metric"><div class="metric-label">Type hints</div><div class="metric-val green">Added</div></div>
+        </div>
+        <div class="two-col" style="margin-bottom:14px">
+          <div class="card" style="padding:0;overflow:hidden">
+            <div class="card-header" style="padding:8px 12px;border-bottom:0.5px solid var(--color-border-tertiary)">
+              <div class="card-title"><i class="ti ti-file" aria-hidden="true"></i> Original</div>
+              <span class="pill pill-gray" style="font-size:10px">14 lines</span>
+            </div>
+            <div class="code-area" style="border-radius:0;font-size:10.5px;min-height:220px"><span class="kw">def</span> <span class="fn">proc</span>(d, x, flag):
+    r = []
+    <span class="kw">for</span> i <span class="kw">in</span> d:
+        <span class="kw">if</span> flag == <span class="str">True</span>:
+            <span class="kw">if</span> x > <span class="str">0</span>:
+                <span class="kw">if</span> i[<span class="str">'val'</span>] > x:
+                    r.append(i[<span class="str">'val'</span>] * <span class="str">2.5</span>)
+                <span class="kw">else</span>:
+                    r.append(i[<span class="str">'val'</span>])
+    total = <span class="str">0</span>
+    <span class="kw">for</span> item <span class="kw">in</span> r:
+        total = total + item
+    <span class="kw">return</span> total, r</div>
+          </div>
+          <div class="card" style="padding:0;overflow:hidden;border-color:#C0DD97">
+            <div class="card-header" style="padding:8px 12px;border-bottom:0.5px solid #C0DD97;background:#EAF3DE">
+              <div class="card-title" style="color:#3B6D11"><i class="ti ti-wand" aria-hidden="true"></i> Refactored by Claude</div>
+              <span class="pill" style="background:#C0DD97;color:#27500A;font-size:10px">12 lines</span>
+            </div>
+            <div class="code-area" style="border-radius:0;font-size:10.5px;min-height:220px"><span class="cm">"""Process records above threshold."""</span>
+<span class="str">MULTIPLIER</span> = <span class="str">2.5</span>
+
+<span class="kw">def</span> <span class="fn">_apply_multiplier</span>(value: <span class="str">float</span>, threshold: <span class="str">float</span>) -> <span class="str">float</span>:
+    <span class="kw">return</span> value * MULTIPLIER <span class="kw">if</span> value > threshold <span class="kw">else</span> value
+
+<span class="kw">def</span> <span class="fn">process_records</span>(
+    records: <span class="str">list</span>, threshold: <span class="str">float</span>, apply: <span class="str">bool</span>
+) -> <span class="str">tuple</span>[<span class="str">float</span>, <span class="str">list</span>]:
+    <span class="kw">if not</span> apply <span class="kw">or</span> threshold <= <span class="str">0</span>:
+        <span class="kw">return</span> <span class="str">0.0</span>, []
+    results = [_apply_multiplier(r[<span class="str">'val'</span>], threshold) <span class="kw">for</span> r <span class="kw">in</span> records]
+    <span class="kw">return</span> <span class="str">sum</span>(results), results</div>
+          </div>
+        </div>
+        <div class="changelog">
+          <div class="changelog-title"><i class="ti ti-list-check" aria-hidden="true"></i> Changes made by Claude (5)</div>
+          <div class="changelog-item"><i class="ti ti-circle-check" aria-hidden="true"></i> Renamed <code>proc → process_records</code>, <code>d → records</code>, <code>x → threshold</code>, <code>flag → apply</code></div>
+          <div class="changelog-item"><i class="ti ti-circle-check" aria-hidden="true"></i> Extracted <code>_apply_multiplier</code> helper — single responsibility principle applied</div>
+          <div class="changelog-item"><i class="ti ti-circle-check" aria-hidden="true"></i> Replaced magic number <code>2.5</code> with named constant <code>MULTIPLIER</code></div>
+          <div class="changelog-item"><i class="ti ti-circle-check" aria-hidden="true"></i> Added type hints to all parameters and return values</div>
+          <div class="changelog-item"><i class="ti ti-circle-check" aria-hidden="true"></i> Simplified nested <code>if</code> chain using early return guard clause</div>
+        </div>
+        <div style="margin-bottom:6px">
+          <div class="section-label">Diff view</div>
+          <div class="card" style="padding:0;overflow:hidden">
+            <div class="card-header" style="padding:8px 12px;border-bottom:0.5px solid var(--color-border-tertiary)">
+              <div class="card-title"><i class="ti ti-git-diff" aria-hidden="true"></i> legacy_processor.py</div>
+              <span style="font-size:11px;color:var(--color-text-tertiary)">−3 lines · +1 function</span>
+            </div>
+            <div class="code-area" style="border-radius:0;font-size:10.5px">
+<span class="diff-hunk">@@ -1,14 +1,12 @@</span>
+<span class="diff-rem">-def proc(d, x, flag):</span>
+<span class="diff-rem">-    r = []</span>
+<span class="diff-rem">-    for i in d:</span>
+<span class="diff-rem">-        if flag == True:</span>
+<span class="diff-rem">-            if x > 0:</span>
+<span class="diff-rem">-                if i['val'] > x:</span>
+<span class="diff-rem">-                    r.append(i['val'] * 2.5)</span>
+<span class="diff-add">+MULTIPLIER = 2.5</span>
+<span class="diff-add">+def _apply_multiplier(value: float, threshold: float) -> float:</span>
+<span class="diff-add">+    return value * MULTIPLIER if value > threshold else value</span>
+<span class="diff-add">+def process_records(records: list, threshold: float, apply: bool):</span>
+<span class="diff-add">+    if not apply or threshold <= 0: return 0.0, []</span>
+<span class="diff-add">+    results = [_apply_multiplier(r['val'], threshold) for r in records]</span>
+<span class="diff-ctx"> </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCREEN 3: DOCS -->
+      <div class="screen" id="s3">
+        <div class="metric-row">
+          <div class="metric"><div class="metric-label">Functions documented</div><div class="metric-val green">2 / 2</div></div>
+          <div class="metric"><div class="metric-label">Docstring style</div><div class="metric-val blue">Google</div></div>
+          <div class="metric"><div class="metric-label">README section</div><div class="metric-val green">Generated</div></div>
+          <div class="metric"><div class="metric-label">OpenAPI schema</div><div class="metric-val amber">N/A</div></div>
+        </div>
+        <div class="tabs">
+          <div class="tab active" id="dt1" onclick="showDocTab('dt1','dc1')">Docstrings</div>
+          <div class="tab" id="dt2" onclick="showDocTab('dt2','dc2')">README section</div>
+          <div class="tab" id="dt3" onclick="showDocTab('dt3','dc3')">OpenAPI schema</div>
+        </div>
+        <div id="dc1">
+          <div class="doc-block">
+            <div class="doc-block-title"><i class="ti ti-function" aria-hidden="true"></i> process_records( )</div>
+            <div class="doc-content"><span class="kw">def</span> <span class="fn">process_records</span>(
+    records: <span class="str">list</span>, threshold: <span class="str">float</span>, apply: <span class="str">bool</span>
+) -> <span class="str">tuple</span>[<span class="str">float</span>, <span class="str">list</span>]:
+    <span class="str">"""Filter and scale records whose values exceed a threshold.
+
+    Applies a fixed multiplier (MULTIPLIER = 2.5) to each record
+    whose 'val' field exceeds the threshold. Returns the sum and
+    the list of processed values.
+
+    Args:
+        records: List of dicts, each containing a 'val' float field.
+        threshold: Minimum value to trigger multiplier application.
+        apply: If False, returns (0.0, []) immediately.
+
+    Returns:
+        A tuple of (total_sum: float, processed_values: list[float]).
+
+    Raises:
+        KeyError: If any record dict is missing the 'val' key.
+    """</span></div>
+          </div>
+          <div class="doc-block">
+            <div class="doc-block-title"><i class="ti ti-function" aria-hidden="true"></i> _apply_multiplier( )</div>
+            <div class="doc-content"><span class="str">"""Apply MULTIPLIER to value if it exceeds threshold.
+
+    Args:
+        value: The numeric value to conditionally scale.
+        threshold: The lower bound for multiplier application.
+
+    Returns:
+        value * MULTIPLIER if value > threshold, else value unchanged.
+    """</span></div>
+          </div>
+        </div>
+        <div id="dc2" style="display:none">
+          <div class="doc-block">
+            <div class="doc-block-title"><i class="ti ti-markdown" aria-hidden="true"></i> README.md — Module overview</div>
+            <div class="doc-content"><span class="kw">## Module Overview: legacy_processor.py</span>
+
+Provides utilities for filtering and scaling numeric records
+based on a configurable threshold value.
+
+<span class="kw">### Main functions</span>
+
+<span class="str">process_records(records, threshold, apply)</span>
+  Filters a list of record dicts and applies a 2.5× multiplier
+  to values that exceed the threshold. Returns both the total
+  sum and the processed list.
+
+<span class="kw">### Constants</span>
+  MULTIPLIER = 2.5  # Scaling factor applied to qualifying records
+
+<span class="kw">### Example</span>
+  data = [{'val': 10}, {'val': 3}, {'val': 8}]
+  total, results = process_records(data, threshold=5.0, apply=True)
+  # total = 45.0, results = [25.0, 3, 20.0]</div>
+          </div>
+        </div>
+        <div id="dc3" style="display:none">
+          <div class="doc-block" style="background:#FAEEDA;border:0.5px solid #FAC775">
+            <div class="doc-block-title" style="color:#854F0B"><i class="ti ti-info-circle" aria-hidden="true"></i> No REST endpoints detected</div>
+            <div style="font-size:12px;color:#854F0B">No function signatures matching REST handler patterns were found in this file. OpenAPI schema generation is only triggered when endpoint decorators or handler patterns are detected.</div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="showScreen('s4',null,3)"><i class="ti ti-test-pipe" aria-hidden="true"></i> Generate unit tests ↗</button>
+          <button class="btn"><i class="ti ti-copy" aria-hidden="true"></i> Copy docs</button>
+          <button class="btn"><i class="ti ti-download" aria-hidden="true"></i> Download .md</button>
+        </div>
+      </div>
+
+      <!-- SCREEN 4: TESTS -->
+      <div class="screen" id="s4">
+        <div class="metric-row">
+          <div class="metric"><div class="metric-label">Tests generated</div><div class="metric-val green">6</div></div>
+          <div class="metric"><div class="metric-label">Functions covered</div><div class="metric-val green">2 / 2</div></div>
+          <div class="metric"><div class="metric-label">Coverage est.</div><div class="metric-val green">100%</div></div>
+          <div class="metric"><div class="metric-label">Framework</div><div class="metric-val blue">pytest</div></div>
+        </div>
+        <div class="test-block">
+          <div class="test-header">
+            <span class="test-badge test-happy">Happy path</span>
+            <span class="test-name">test_process_records_above_threshold</span>
+          </div>
+          <div class="test-why">Why: Verifies the core multiplier logic when all conditions are met (apply=True, valid threshold, values above threshold)</div>
+          <div class="test-code"><span class="cm"># Happy path: apply=True, threshold=5, values above threshold get multiplied</span>
+<span class="kw">def</span> <span class="fn">test_process_records_above_threshold</span>():
+    data = [{<span class="str">'val'</span>: <span class="str">10</span>}, {<span class="str">'val'</span>: <span class="str">8</span>}]
+    total, results = process_records(data, threshold=<span class="str">5.0</span>, apply=<span class="str">True</span>)
+    <span class="kw">assert</span> total == <span class="str">45.0</span>
+    <span class="kw">assert</span> results == [<span class="str">25.0</span>, <span class="str">20.0</span>]</div>
+        </div>
+        <div class="test-block">
+          <div class="test-header">
+            <span class="test-badge test-edge">Edge case</span>
+            <span class="test-name">test_process_records_apply_false</span>
+          </div>
+          <div class="test-why">Why: When apply=False the function must short-circuit and return (0.0, []) regardless of input data</div>
+          <div class="test-code"><span class="cm"># Edge: apply=False should return empty immediately, no processing</span>
+<span class="kw">def</span> <span class="fn">test_process_records_apply_false</span>():
+    data = [{<span class="str">'val'</span>: <span class="str">100</span>}]
+    total, results = process_records(data, threshold=<span class="str">5.0</span>, apply=<span class="str">False</span>)
+    <span class="kw">assert</span> total == <span class="str">0.0</span>
+    <span class="kw">assert</span> results == []</div>
+        </div>
+        <div class="test-block">
+          <div class="test-header">
+            <span class="test-badge test-err">Exception</span>
+            <span class="test-name">test_process_records_missing_val_key</span>
+          </div>
+          <div class="test-why">Why: If a record dict is missing the 'val' key, a KeyError should be raised — not silently swallowed</div>
+          <div class="test-code"><span class="cm"># Error: missing 'val' key should raise KeyError</span>
+<span class="kw">import</span> pytest
+<span class="kw">def</span> <span class="fn">test_process_records_missing_val_key</span>():
+    bad_data = [{<span class="str">'amount'</span>: <span class="str">10</span>}]
+    <span class="kw">with</span> pytest.raises(KeyError):
+        process_records(bad_data, threshold=<span class="str">5.0</span>, apply=<span class="str">True</span>)</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary"><i class="ti ti-download" aria-hidden="true"></i> Download test_legacy_processor.py</button>
+          <button class="btn"><i class="ti ti-copy" aria-hidden="true"></i> Copy all tests</button>
+          <button class="btn" onclick="showScreen('s1',null,0)"><i class="ti ti-refresh" aria-hidden="true"></i> New file</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+  <div class="card">
+    <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px;display:flex;align-items:center;gap:6px"><i class="ti ti-palette" style="font-size:14px;color:#185FA5" aria-hidden="true"></i> Color system</div>
+    <div style="font-size:11px;color:var(--color-text-secondary);line-height:1.7">
+      <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#185FA5;margin-right:5px;vertical-align:middle"></span>Blue — primary actions, active states<br>
+      <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#3B6D11;margin-right:5px;vertical-align:middle"></span>Green — accepted, success, additions<br>
+      <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#A32D2D;margin-right:5px;vertical-align:middle"></span>Red — deletions, reject, errors<br>
+      <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#854F0B;margin-right:5px;vertical-align:middle"></span>Amber — warnings, caution<br>
+      <span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--color-background-secondary);border:0.5px solid var(--color-border-tertiary);margin-right:5px;vertical-align:middle"></span>Gray — neutral, secondary info
+    </div>
+  </div>
+  <div class="card">
+    <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px;display:flex;align-items:center;gap:6px"><i class="ti ti-components" style="font-size:14px;color:#185FA5" aria-hidden="true"></i> Component library</div>
+    <div style="font-size:11px;color:var(--color-text-secondary);line-height:1.7">
+      Sidebar nav with active states<br>
+      Step progress tracker (topbar)<br>
+      Code editor with syntax highlight<br>
+      Side-by-side diff viewer<br>
+      HITL review banner + buttons<br>
+      Metric cards (4-column grid)<br>
+      Changelog list with icons<br>
+      Tabbed output panels
+    </div>
+  </div>
+  <div class="card">
+    <div style="font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px;display:flex;align-items:center;gap:6px"><i class="ti ti-route" style="font-size:14px;color:#185FA5" aria-hidden="true"></i> User flow</div>
+    <div style="font-size:11px;color:var(--color-text-secondary);line-height:1.7">
+      1 · Paste/upload → static analysis<br>
+      2 · Claude refactors → HITL review<br>
+      3 · Accept → documentation gen<br>
+      4 · Tests generated with reasons<br><br>
+      Reject at step 2 → back to step 1<br>
+      Steps 3 & 4 locked until accepted
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const titles = ["Step 1 — Input your code","Step 2 — Review AI refactoring","Step 3 — Documentation","Step 4 — Unit tests"];
+const subs = ["Paste or upload a .py file to begin","Inspect changes and accept or reject","Auto-generated docstrings and README","pytest tests with Shift-Left coverage"];
+const steps = [['done','active','locked','locked'],['done','done','active','locked'],['done','done','done','active'],['done','done','done','done']];
+const sideItems = document.querySelectorAll('.sb-item');
+
+function showScreen(id, tabEl, idx) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('show'));
+  document.getElementById(id).classList.add('show');
+  if(tabEl) {
+    document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+    tabEl.classList.add('active');
+  } else {
+    document.querySelectorAll('.tabs .tab').forEach((t,i) => {
+      t.classList.toggle('active', i === (idx||0));
+    });
+  }
+  if(idx !== undefined) {
+    document.getElementById('screen-title').textContent = titles[idx];
+    document.getElementById('screen-sub').textContent = subs[idx];
+    const s = steps[idx];
+    ['stp1','stp2','stp3','stp4'].forEach((sid,i) => {
+      const el = document.getElementById(sid);
+      el.className = 'step ' + s[i];
+      if(s[i]==='done') el.querySelector('.step-num').innerHTML = '<i class="ti ti-check" style="font-size:10px" aria-hidden="true"></i>';
+      else el.querySelector('.step-num').textContent = (i+1);
+    });
+    sideItems.forEach((item,i) => {
+      if(i <= idx) item.classList.remove('locked');
+      item.classList.toggle('active', i === idx);
+    });
+  }
+}
+
+function showDocTab(tabId, contentId) {
+  ['dt1','dt2','dt3'].forEach(id => document.getElementById(id).classList.remove('active'));
+  ['dc1','dc2','dc3'].forEach(id => document.getElementById(id).style.display='none');
+  document.getElementById(tabId).classList.add('active');
+  document.getElementById(contentId).style.display='block';
+}
+</script>
