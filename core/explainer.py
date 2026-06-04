@@ -26,10 +26,10 @@ All Rights Reserved.
 ===============================================================================
 """
 import os
-import requests
 import time
 from core.prompts import NVIDIA_EXPLANATION_PROMPT
 from core.gemini_client import call_gemini
+from core.nvidia_client import call_nvidia
 
 def generate_explanation(source_code, refactored_code, provider= "Claude (Anthropic)"):
     """Generates a detailed explanation and code review using the NVIDIA API.
@@ -63,31 +63,35 @@ def generate_explanation(source_code, refactored_code, provider= "Claude (Anthro
     
     if "Gemini" in provider:
         return call_gemini(prompt)
-        
-    api_key = os.getenv("NVIDIA_API_KEY")
-    if not api_key:
-        return "⚠️ NVIDIA API Key not found in environment. Please add NVIDIA_API_KEY to your .env file to see the AI Explanation."
-        
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "accept": "application/json",
-        "content-type": "application/json"
-    }
-    
-    data = {
-        "model": "meta/llama3-70b-instruct",
-        "messages": [
-            {"role": "user", "content": prompt}
-        ],
-        "temperature": 0.3,
-        "max_tokens": 1500
-    }
-    
-    try:
-        response = requests.post("https://integrate.api.nvidia.com/v1/chat/completions", headers=headers, json=data)
-        if response.status_code == 200:
-            return response.json()["choices"][0]["message"]["content"]
+    elif "NVIDIA" in provider:
+        return call_nvidia(prompt)
+    elif "Claude" in provider:
+        from anthropic import Anthropic
+        client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        message = client.messages.create(
+            model="claude-3-haiku-20240307",
+            max_tokens=4000,
+            temperature=0.1,
+            messages=[{"role": "user", "content": prompt}]
+        )
+        return message.content[0].text
+    elif "OpenAI" in provider:
+        headers = {
+            "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",
+            "Content-Type": "application/json"
+        }
+        data = {
+            "model": "gpt-4o",
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.1
+        }
+        import requests
+        resp = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=data)
+        if resp.status_code == 200:
+            return resp.json()["choices"][0]["message"]["content"]
         else:
-            return f"NVIDIA API Error: {response.text}"
-    except Exception as e:
-        return f"Failed to connect to NVIDIA API: {str(e)}"
+            raise Exception(f"OpenAI API Error: {resp.text}")
+    return "Error: Unknown provider selected."
+
+        
+

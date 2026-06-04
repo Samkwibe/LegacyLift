@@ -29,6 +29,7 @@ import time
 import os
 import requests
 from core.refactor import call_gemini
+from core.nvidia_client import call_nvidia
 
 TRANSLATE_PROMPT = """You are an expert polyglot software engineer.
 Translate the following code into {target_language}.
@@ -59,6 +60,8 @@ def translate_code(source_code, target_language, provider="Gemini 3.5 Flash (Goo
             messages=[{"role": "user", "content": prompt}]
         )
         return message.content[0].text
+    elif "NVIDIA" in provider:
+        return call_nvidia(prompt)
     elif "OpenAI" in provider:
         headers = {
             "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",

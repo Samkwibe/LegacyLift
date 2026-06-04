@@ -26,7 +26,6 @@ All Rights Reserved.
 ===============================================================================
 """
 from fpdf import FPDF
-import io
 
 class ReportPDF(FPDF):
     def header(self):

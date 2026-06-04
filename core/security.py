@@ -27,6 +27,7 @@ All Rights Reserved.
 """
 import time
 from core.refactor import call_gemini
+from core.nvidia_client import call_nvidia
 import requests
 import os
 
@@ -74,6 +75,8 @@ The code appears mostly secure, but there are some critical issues regarding har
             messages=[{"role": "user", "content": prompt}]
         )
         return message.content[0].text
+    elif "NVIDIA" in provider:
+        return call_nvidia(prompt)
     elif "OpenAI" in provider:
         headers = {
             "Authorization": f"Bearer {os.getenv('OPENAI_API_KEY')}",

@@ -28,7 +28,6 @@ All Rights Reserved.
 from core.analyzer import analyze_code
 from core.documenter import generate_docs
 import streamlit as st
-import os
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -85,7 +84,7 @@ def render_sidebar():
     
     st.sidebar.markdown("---")
     st.sidebar.subheader("LLM Provider")
-    provider = st.sidebar.selectbox("Choose Provider", ["Gemini 3.5 Flash (Google) - FREE", "Claude (Anthropic)", "GPT-4o (OpenAI)", "Mock (Free Demo)"])
+    provider = st.sidebar.selectbox("Choose Provider", ["Llama 3.1 70B (NVIDIA) - FREE", "Gemini 3.5 Flash (Google) - FREE", "Claude (Anthropic)", "GPT-4o (OpenAI)", "Mock (Free Demo)"])
     st.session_state.provider = provider
     
     st.sidebar.subheader("Language")

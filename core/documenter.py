@@ -32,6 +32,7 @@ import requests
 from anthropic import Anthropic
 from core.prompts import DOCS_PROMPT
 from core.gemini_client import call_gemini
+from core.nvidia_client import call_nvidia
 
 def generate_docs(refactored_code, language= "Python", provider= "Claude (Anthropic)"):
     """Generates Docstrings, a README section, and OpenAPI schema based on the refactored code.
@@ -90,6 +91,8 @@ def generate_docs(refactored_code, language= "Python", provider= "Claude (Anthro
         content = response.content[0].text
     elif "Gemini" in provider:
         content = call_gemini(prompt)
+    elif "NVIDIA" in provider:
+        content = call_nvidia(prompt)
     else:
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:

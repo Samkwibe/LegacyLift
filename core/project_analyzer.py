@@ -31,6 +31,7 @@ import requests
 from anthropic import Anthropic
 from core.prompts import PROJECT_WALKTHROUGH_PROMPT
 from core.gemini_client import call_gemini
+from core.nvidia_client import call_nvidia
 
 def scan_local_codebase(directory="."):
     """Scans the local directory and aggregates all relevant code files into a single string."""
@@ -97,6 +98,8 @@ Building a tool that wraps LLMs means dealing with context window limits, prompt
         return response.content[0].text
     elif "Gemini" in provider:
         return call_gemini(prompt)
+    elif "NVIDIA" in provider:
+        return call_nvidia(prompt)
     else:
         api_key = os.getenv("OPENAI_API_KEY")
         if not api_key:
