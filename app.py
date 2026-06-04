@@ -85,7 +85,7 @@ def render_sidebar():
     
     st.sidebar.markdown("---")
     st.sidebar.subheader("LLM Provider")
-    provider = st.sidebar.selectbox("Choose Provider", ["Mock (Free Demo)", "Gemini 3.5 Flash (Google) - FREE", "Claude (Anthropic)", "GPT-4o (OpenAI)"])
+    provider = st.sidebar.selectbox("Choose Provider", ["Gemini 3.5 Flash (Google) - FREE", "Claude (Anthropic)", "GPT-4o (OpenAI)", "Mock (Free Demo)"])
     st.session_state.provider = provider
     
     st.sidebar.subheader("Language")
