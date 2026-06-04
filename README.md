@@ -7,6 +7,8 @@
 ![OpenAI](https://img.shields.io/badge/OpenAI-GPT_4o-412991?style=for-the-badge&logo=openai)
 ![NVIDIA](https://img.shields.io/badge/NVIDIA-NIM_API-76B900?style=for-the-badge&logo=nvidia)
 
+🚀 **Live Demo:** [https://legacylift-aywfjmusd5qnvevgewdynk.streamlit.app/](https://legacylift-aywfjmusd5qnvevgewdynk.streamlit.app/)
+
 **LegacyLift** is a state-of-the-art AI-powered code modernization and mentorship tool. Designed for developers and students alike, it takes poorly written, undocumented "spaghetti code" and automatically refactors it into clean, maintainable, and fully documented production-ready code.
 
 Not only does it fix code—it **teaches** you how to write better code. Through deep architectural analysis, visual mentorship, and line-by-line feedback, LegacyLift acts as your personal Senior Software Engineer.
