@@ -96,7 +96,8 @@ Open your browser to `http://localhost:8501`.
 ---
 
 ## 🏗️ Architecture
-
+[![Architecture diagram](https://gitdiagram.com/diagram-badge.svg)](https://gitdiagram.com/samkwibe/legacylift?utm_source=readme&utm_medium=badge)
+[![Architecture diagram of samkwibe/legacylift](https://gitdiagram.com/samkwibe/legacylift/diagram.png)](https://gitdiagram.com/samkwibe/legacylift?utm_source=readme&utm_medium=picture)
 - **Frontend**: Streamlit with Custom CSS (Glassmorphism UI Theme)
 - **Backend Core**: Python (AST Module, Regex Parsing, REST Requests)
 - **AI Integration Layers**: 
